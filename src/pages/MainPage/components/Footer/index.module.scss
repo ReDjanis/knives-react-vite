@@ -1,0 +1,89 @@
+@import 'styles/_global';
+
+.footer {
+    z-index: 5;
+    flex: 0 0 auto;
+    width: 100%;
+    min-height: 135px;
+    height: 100%;
+    background-color: #494138;
+
+    &__content {
+        max-width: 1440px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0 30px;
+    }
+
+    &__info {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__communication {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        row-gap: 10px;
+        margin: 30px 30px 0 0;
+    }
+
+    &__location {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        svg {
+            width: 20px;
+            height: 20px;
+            fill: #FFF;
+        }
+    }
+
+    &__text {
+        padding-left: 10px;
+        color: #F4F3F0;
+        @include fluidFont(14px, 16px, 18px, 20px, 795px, 1920px, 14px);
+        letter-spacing: 1px;
+    }
+
+    &__rights {
+        padding-left: 30px;
+        color: #F4F3F0;
+        @include fluidFont(14px, 16px, 18px, 20px, 795px, 1920px, 14px);
+        letter-spacing: 1px;
+    }
+}
+
+@media screen and (max-width: 1150px) {
+    .footer {
+        &__content {
+            padding: 0 15px;
+        }
+
+        &__communication {
+            margin-right: calcFluidParam(0px, 30, 995px, 1150);
+        }
+    }
+}
+
+@media screen and (max-width: 995px) {
+    .footer {
+        &__info {
+            justify-content: flex-start;
+        }
+
+        &__communication {
+            align-items: flex-start;
+            row-gap: 15px;
+            margin-right: 0;
+        }
+
+        &__rights {
+            margin: 15px 0;
+            padding-left: 0;
+        }
+    }
+}

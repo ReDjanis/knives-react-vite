@@ -1,0 +1,125 @@
+@use 'sass:math';
+
+@mixin fonts($fz, $lh, $fw: 400) {
+    font-size: $fz;
+    line-height: $lh;
+    font-weight: $fw;
+}
+
+@function strip-unit($number) {
+    @if type-of($number)=='number'and not unitless($number) {
+        @return math.div($number, ($number * 0 + 1));
+    }
+
+    @return $number;
+}
+
+@function calcFluidFontSize($f-min, $f-max, $w-min, $w-max, $units: px) {
+    $f-min: strip-unit($f-min);
+    $f-max: strip-unit($f-max);
+    $w-min: strip-unit($w-min);
+    $w-max: strip-unit($w-max);
+
+    $k: calc(($f-max - $f-min)/($w-max - $w-min));
+    $b: $f-min - $k * $w-min;
+
+    $b: $b + $units;
+
+    @return calc(#{$k} * 100vw + #{$b});
+}
+
+@function calcFluidLineHeight($lh-min, $lh-max, $w-min, $w-max, $units: px) {
+    $lh-min: strip-unit($lh-min);
+    $lh-max: strip-unit($lh-max);
+    $w-min: strip-unit($w-min);
+    $w-max: strip-unit($w-max);
+
+    $k: calc(($lh-max - $lh-min)/($w-max - $w-min));
+    $b: $lh-min - $k * $w-min;
+
+    $b: $b + $units;
+
+    @return calc(#{$k} * 100vw + #{$b});
+}
+
+/*
+fluidFont - позволяет задать минимальный и максимальный размеры font-size и line-height 
+и обеспечить их плавное уменьшение начиная с максимального размера экрана до минимального. При этом значения шрифта и высоты линии для экранов меньше минимального будут соответствовать переменным $f-min и $lh-min; для экранов выше максимального - соответсвенно $f-max и $lh-max.
+$f-min - минимальный размер шрифта (font-size);
+$f-max - максимальный размер шрифта (font-size);
+$lh-min - минимальный размер высоты линии (line-height);
+$lh-max - максимальный размер высоты линии (line-height);
+$w-min - начало интервала для изменения параметров - минимальная ширина экрана;
+$w-max - конец интервала для изменения параметров - максимальная ширина экрана;
+$fallback - значение шрифта по умолчанию
+*/
+
+@mixin fluidFont($f-min, $f-max, $lh-min, $lh-max, $w-min, $w-max, $fallback: false) {
+
+    font-size: $f-min;
+    line-height: $lh-min;
+
+    @media (min-width: $w-min) {
+        @if ($fallback) {
+            font-size: $fallback;
+        }
+
+        font-size: calcFluidFontSize($f-min, $f-max, $w-min, $w-max);
+        line-height: calcFluidLineHeight($lh-min, $lh-max, $w-min, $w-max);
+    }
+
+    @media (min-width: $w-max) {
+        font-size: $f-max;
+        line-height: $lh-max;
+    }
+}
+
+/*
+calcFluidParam - позволяет задать минимальный и максимальный размеры какого-либо параметра CSS 
+и обеспечить его плавное уменьшение начиная с максимального размера экрана до минимального. 
+$var-min - минимальный размер параметра, передается с единицей измерения;
+$var-max - максимальный размер параметра, передается без единицы измерения;
+$w-min - начало интервала для изменения параметров - минимальная ширина экрана, передается с единицей измерения;
+$w-max - конец интервала для изменения параметров - максимальная ширина экрана, передается без единицы измерения;
+*/
+
+@function calcFluidParam($var-min, $var-max, $w-min, $w-max) {
+    $var-min-unit: $var-min;
+    $var-min-no-unit: strip-unit($var-min);
+
+    $w-min-unit: $w-min;
+    $w-min-no-unit: strip-unit($w-min);
+
+    @return calc($var-min-unit + ($var-max - $var-min-no-unit) * ((100vw - $w-min-unit) / ($w-max - $w-min-no-unit)));
+}
+
+%buttons {
+    padding: 20px 25px;
+    @include fluidFont(14px, 18px, 18px, 20px, 250px, 1920px, 16px);
+    background: rgba(#50735F, 0.5);
+    box-shadow: 1px 1px 0 #50735F, 0px 1px 6px #c3853e;
+    letter-spacing: 1px;
+    transition: all 150ms linear;
+    cursor: pointer;
+}
+
+%buttons-hover {
+    background: rgba(#50735F, 0.5);
+    box-shadow: inset -1px 2px 7px 4px rgb(0 0 0 / 20%);
+    text-shadow: -1px -1px 0 rgba(#C58A46, 9.5%);
+    transition: all 250ms linear;
+}
+
+%btn__close {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 100;
+    font-weight: 700;
+    @include fluidFont(14px, 16px, 16px, 18px, 270px, 1920px, 16px);
+    padding: 15px 25px;
+    color: rgb(194 231 213 / 50%);
+    cursor: pointer;
+}
+

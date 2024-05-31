@@ -1,0 +1,45 @@
+@import '../../styles/global';
+
+.menu {
+    &__list {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    &__item {
+        margin: 0 30px;
+        padding: 10px 0;
+    }
+
+    a {
+        display: inline-block;
+        min-width: 76px;
+        color: #F4F3F0;
+        font-weight: 300;
+        text-decoration: none;
+        text-transform: uppercase;
+        @include fonts(14px, 16px);
+        letter-spacing: 1px;
+        padding-bottom: 10px;
+        padding-top: 12px;
+       
+        transition: border-bottom 0.8s;
+
+    }
+
+    .active {
+        border-bottom: 2px solid #F4F3F0;
+    }
+
+    .pending {
+        border-bottom: 2px solid transparent;
+    }
+}
+
+@media screen and (max-width: 995px) {
+    .menu {
+        display: none;
+    }
+}
